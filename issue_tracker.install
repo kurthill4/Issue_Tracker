@@ -1,0 +1,41 @@
+<?php
+	
+	function issue_tracker_schema()
+	{
+		$schema['issue_tracker'] = array(
+			'description' => 'Issue tracker base table.',
+			'fields' => array(
+				'issueID' 		=> [ 'type' => 'serial', 'not null' => TRUE ],
+				'url' 			=> [ 'type' => 'varchar', 'length' => 1024, 'not null' => TRUE ],
+				'http_referer'	=> [ 'type' => 'varchar', 'length' => 2048 ],
+				'reportDate' 	=> [ 'mysql_type' => 'datetime', 'not null' => TRUE ],
+				'email'			=> [ 'type' => 'varchar', 'length' => 256 ],
+				'issue'			=> [ 'type' => 'varchar', 'length' => 2048 ],				
+				'status'		=> [ 'type' => 'int', 'default' => 0 ]
+			),
+
+
+			'primary key' => array('issueID'),
+			'indexes' => array('issue_reportDate' => ['reportDate'])
+		
+		
+		);
+		
+		$schema['issue_tracker_notes'] = 
+		[
+			'description' => 'Issue Tracking notes table.',
+			'fields' => 
+			[
+				'issueID' 	=> [ 'type' => 'int', 'not null' => TRUE ],
+				'Date' 		=> [ 'mysql_type' => 'datetime', 'not null' => TRUE ],
+				'Note'		=> [ 'type' => 'varchar', 'length' => 2048 ],				
+			],
+			'indexes' => ['issueID' => ['issueID']]
+		
+		];
+		
+		return $schema;
+		
+	}
+	
+	

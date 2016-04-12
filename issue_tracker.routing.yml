@@ -1,0 +1,32 @@
+issue_tracker.report:
+  path: 'issue/report'
+  defaults:
+    _form: '\Drupal\issue_tracker\Form\IssueForm'
+    _title: 'Report Issue'
+  requirements:
+    _access: 'TRUE'
+
+issue_tracker.list:
+  path: 'issue/list'
+  defaults:
+    _controller: '\Drupal\issue_tracker\Controller\IssueList::build'
+  requirements:  
+    _permission: 'access content'
+
+issue_tracker.edit:
+  path: 'issue/edit/{issueid}'
+  defaults:
+    _form: '\Drupal\issue_tracker\Form\IssueEditForm'
+    _title_callback: '\Drupal\issue_tracker\Form\IssueEditForm::getPageTitle'
+  requirements:
+    _permission: 'access content'
+    issueid: '[0-9]+'
+    
+issue_tracker.thankyou:
+  path: 'issue/thankyou/{issueid}'
+  defaults:
+    _controller: '\Drupal\issue_tracker\Form\IssueForm::thankYou'
+    issueid: ''
+  requirements:
+    _access: 'TRUE'
+    

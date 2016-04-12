@@ -1,0 +1,6 @@
+name: Issue Tracker
+type: module
+description: 'Simple issue tracker for reporting website errors.'
+package: Custom
+core: 8.x
+hidden: false
