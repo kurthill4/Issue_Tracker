@@ -114,7 +114,7 @@ class IssueForm extends FormBase {
 	$newIssueID = \Drupal\issue_tracker\Controller\IssueStorage::add($issue);
 	$redirect = \Drupal\Core\Url::fromRoute('issue_tracker.thankyou');
 	$redirect->setRouteParameters(array('issueid' => $newIssueID));
-	$redirect->setRouteParameters(array('foo' => 'bar'));
+	$redirect->setRouteParameters(array('i' => $newIssueID));
 	$form_state->setRedirectUrl($redirect); // array('issueid' => $newIssueID)
 	
   }

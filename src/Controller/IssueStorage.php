@@ -93,6 +93,25 @@ class IssueStorage
 	}
 
 	/**
+	 * 
+	 **/
+	static function getPagedQueryInterface()
+	{
+		$cn = \Drupal::database();
+		$query = $cn->select('issue_tracker', 'i');
+		
+		$paged_query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
+		//$paged_query = $query->extend('Drupal\Core\Database\Query\TableSortExtender');
+		
+		$paged_query->fields('i');	// Uses '*' if no field array passed.  Returns SelectInterface.
+		$paged_query->limit(5);
+		
+		return $paged_query;
+		
+	}
+
+
+	/**
 	 * Get a "prepared statement" for a paged result set for notes for a given issue ID.
 	 **/
 	static function getNotes($issueid)

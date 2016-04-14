@@ -14,11 +14,14 @@ class IssueList
 	
 	public function build()
 	{
-		$result = \Drupal\issue_tracker\Controller\IssueStorage::getPaged();
+		$header = $this->getTableHeader();
+		
+		$paged_query = \Drupal\issue_tracker\Controller\IssueStorage::getPagedQueryInterface();
+		//$paged_query = $paged_query->orderbyHeader($header);
+		$result = $paged_query->extend('Drupal\Core\Database\Query\TableSortExtender')->orderbyHeader($header)->execute();
+		
 		$items = array();
 		
-		$header = $this->getTableHeader();
-		$items['#header'] = $header;
 		// $items['#sticky'] = 'TRUE';
 		foreach($result as $row)
 		{
@@ -27,16 +30,19 @@ class IssueList
 			if( $row->http_referer != $row->url)
 			{
 				$source .= '<br />' . $row->http_referer;
+				$source = \Drupal\Core\Render\Markup::create($source);
 			}
 			
 			$link = Url::fromRoute( 'issue_tracker.edit', array('issueid' => $row->issueID) );
 			$link = \Drupal::l($issueid, $link);
-			
-			$items[] = ['data' => [$link, $row->reportDate, $row->email, $row->issue, $source, $row->status] ];
+						
+			$issue=\Drupal\Core\Render\Markup::create($row->issue);
+			$items[] = ['data' => [$link, $row->reportDate, $row->email, $issue, $source, $row->status] ];
+			//$items[] = ['data' => (array) $row];
 		}
 		
 		$build=array();
-		$build['items'] = ['#theme' => 'table', '#rows' => $items ];
+		$build['tablesort_table'] = ['#theme' => 'table', '#header' => $header, '#rows' => $items ];
 		$build['item_pager'] = ['#type' => 'pager'];
 		
 		return $build;
@@ -45,12 +51,12 @@ class IssueList
 	private function getTableHeader()
 	{
 		$header= [
-					'issueID' => 'Issue ID',
-					'reportDate' => 'Reported On',
-					'email' => 'Reported By',
-					'issue' => 'Issue Description',
-					'source' => 'URL',
-					'status' => 'Status'
+					array('data' => t('Issue ID'), 			'field' => 'i.issueID'),
+					array('data' => t('Reported On'), 		'field' => 'i.reportDate'),
+					array('data' => t('Reported By'), 		'field' => 'i.email'),
+					array('data' => t('Issue Description') ),
+					array('data' => t('URL'), 				'field' => 'i.url'),
+					array('data' => t('Status'), 			'field' => 'i.status')
 				];
 		
 		return $header;
