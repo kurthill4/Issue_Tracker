@@ -68,6 +68,7 @@ class IssueEditForm extends FormBase
 		$this->writeNote($formdata);
 		\Drupal\issue_tracker\Controller\IssueStorage::closeIssue($formdata['issueID']);
 		
+		\Drupal\Core\Cache\Cache::invalidateTags(['issuelist', 'issueeditform']);
 		
 	}
 
