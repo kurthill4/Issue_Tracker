@@ -26,16 +26,19 @@ class IssueEditForm extends FormBase
 	*/
 	public function buildForm(array $form, FormStateInterface $form_state, $issueid = NULL) 
 	{
+
 		$output['Issue'] = $this->getIssueRenderArray($issueid);
 		$output['IssueHistory'] = $this->getNotesRenderArray($issueid);
 		$output['Note'] = ['#type' => 'textarea', '#title' => 'Notes', '#required' => TRUE ];
-		
+		dpm($output);
 		$output['Submit'] = ['#type' => 'submit', '#value' => 'Submit'];
 		$output['Close'] = ['#type' => 'submit', '#value' => 'Close Issue', '#submit' => ['::submitForm_closeIssue']];
 		$output['Cancel'] = ['#type' => 'submit', '#value' => 'Cancel', '#submit' => ['::cancelForm']];
 		
 		$output['hidden_issueid'] = ['#type' => 'hidden', '#value' => $issueid];
-		
+
+		$output[] = ['#cache' => ['tags' => ['issueeditform'], 'max-age' => 0]];		
+		dpm($output);
 		return $output;
 		// Return array of Form API elements.
 	}
@@ -55,7 +58,8 @@ class IssueEditForm extends FormBase
 	{
 		$formdata = $this->parseForm($form_state);
 		$this->writeNote($formdata);
-
+		
+		\Drupal\Core\Cache\Cache::invalidateTags(['issuelist', 'issueeditform']);
 	}
 	
 	public function submitForm_closeIssue(array &$form,  FormStateInterface $form_state, $issueid = NULL)
@@ -103,7 +107,7 @@ class IssueEditForm extends FormBase
 		$output['issue'][] = ['#markup' => 'Reported by: ' . $issue->email, '#suffix' => '<br />'];
 		
 		$output['issue'][] = ['#markup' => 'Issue: ' . $issue->issue, '#suffix' => '<hr />'];
-		
+		$output['issue'] = ['#cache' => ['max-age' => 0]];
 		return $output;
 	}
 	

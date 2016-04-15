@@ -92,6 +92,8 @@ class IssueForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state)
   {
+	\Drupal\Core\Cache\Cache::invalidateTags(['issuelist']);
+	
 	$source = $form_state->getValue('SourceURL');
 	$referer = $form_state->getValue('hidden_Referer');
 	$date = Html::escape($form_state->getValue('ReportDate'));
@@ -116,6 +118,7 @@ class IssueForm extends FormBase {
 	$redirect->setRouteParameters(array('issueid' => $newIssueID));
 	$redirect->setRouteParameters(array('i' => $newIssueID));
 	$form_state->setRedirectUrl($redirect); // array('issueid' => $newIssueID)
+	
 	
   }
 

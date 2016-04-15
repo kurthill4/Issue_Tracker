@@ -17,12 +17,10 @@ class IssueList
 		$header = $this->getTableHeader();
 		
 		$paged_query = \Drupal\issue_tracker\Controller\IssueStorage::getPagedQueryInterface();
-		//$paged_query = $paged_query->orderbyHeader($header);
 		$result = $paged_query->extend('Drupal\Core\Database\Query\TableSortExtender')->orderbyHeader($header)->execute();
 		
 		$items = array();
 		
-		// $items['#sticky'] = 'TRUE';
 		foreach($result as $row)
 		{
 			$issueid = str_pad($row->issueID, 5, '0', STR_PAD_LEFT);
@@ -38,12 +36,12 @@ class IssueList
 						
 			$issue=\Drupal\Core\Render\Markup::create($row->issue);
 			$items[] = ['data' => [$link, $row->reportDate, $row->email, $issue, $source, $row->status] ];
-			//$items[] = ['data' => (array) $row];
 		}
 		
 		$build=array();
 		$build['tablesort_table'] = ['#theme' => 'table', '#header' => $header, '#rows' => $items ];
 		$build['item_pager'] = ['#type' => 'pager'];
+		$build[] = ['#cache' => ['tags' => ['issuelist'], 'max-age' => 0]];
 		
 		return $build;
 	}
