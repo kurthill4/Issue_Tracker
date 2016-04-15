@@ -17,6 +17,7 @@ class IssueList
 		$header = $this->getTableHeader();
 		
 		$paged_query = \Drupal\issue_tracker\Controller\IssueStorage::getPagedQueryInterface();
+		$paged_query->limit(20);
 		$result = $paged_query->extend('Drupal\Core\Database\Query\TableSortExtender')->orderbyHeader($header)->execute();
 		
 		$items = array();
